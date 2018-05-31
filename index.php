@@ -17,7 +17,52 @@ date_default_timezone_set("Asia/Colombo");
     <title>Chat Box v1.0</title>
 </head>
 <body>
+<div class="container">
+    <div class="col-md-6 offset-3">
+        <h3 class="text-center">Chat Box</h3>
+        <div class="jumbotron">
+            <ul class="list-group">
+				<?php
+				// get messages
+				$query = "select * from chat order by id desc";
+				$run   = $con->query( $query );
+				while ( $row = $run->fetch_array() ):
+					?>
+                    <li class="list-group-item">
+                        <span class="text-muted"><?php echo $row['name'] ?>: </span>
+                        <span class="small"><?php echo $row['message'] ?></span>
+                        <span class="float-right badge badge-dark"><?php echo date_format(new DateTime($row['date']), 'g:i a') ?></span></li>
+				<?php endwhile; ?>
+            </ul>
+        </div>
+        <form action="index.php" method="post">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Name</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Enter your name" autofocus name="name">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Message</span>
+                </div>
+                <textarea name="message" rows="1" class="form-control" placeholder="Enter your message"></textarea>
+            </div>
+            <input class="btn btn-outline-dark btn-block btn-sm" type="submit" value="Submit" name="submit">
+            <input class="btn btn-outline-dark btn-block btn-sm" type="reset" value="Reset">
+        </form>
+		<?php
+		// send message
+		if ( isset( $_POST['submit'] ) ) {
+			$name    = $_POST['name'];
+			$message = $_POST['message'];
 
+			$query2 = "insert into chat (name, message) values ('$name','$message')";
+			$run    = $con->query( $query2 );
+		}
+		?>
+    </div>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
