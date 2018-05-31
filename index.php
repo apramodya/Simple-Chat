@@ -1,6 +1,5 @@
 <?php
 include( 'db.php' );
-date_default_timezone_set("Asia/Colombo");
 ?>
 <!doctype html>
 <html lang="en">
@@ -15,25 +14,28 @@ date_default_timezone_set("Asia/Colombo");
 
     <link rel="stylesheet" href="styles.css">
     <title>Chat Box v1.0</title>
+    <script>
+        function ajax() {
+            let req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (req.readyState === 4 && req.status === 200){
+                    document.getElementById('chat').innerHTML = req.responseText;
+                }
+            };
+            req.open('GET', 'chat.php', true);
+            req.send();
+        }
+        setInterval(function () {
+            ajax();
+        }, 1000);
+    </script>
 </head>
-<body>
+<body onload="ajax();">
 <div class="container">
     <div class="col-md-6 offset-3">
         <h3 class="text-center">Chat Box</h3>
         <div class="jumbotron">
-            <ul class="list-group">
-				<?php
-				// get messages
-				$query = "select * from chat order by id desc";
-				$run   = $con->query( $query );
-				while ( $row = $run->fetch_array() ):
-					?>
-                    <li class="list-group-item">
-                        <span class="text-muted"><?php echo $row['name'] ?>: </span>
-                        <span class="small"><?php echo $row['message'] ?></span>
-                        <span class="float-right badge badge-dark"><?php echo date_format(new DateTime($row['date']), 'g:i a') ?></span></li>
-				<?php endwhile; ?>
-            </ul>
+            <div id="chat"></div>
         </div>
         <form action="index.php" method="post">
             <div class="input-group mb-3">
